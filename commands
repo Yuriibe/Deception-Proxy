@@ -1,0 +1,3 @@
+docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres
+
+docker run --name adminer -d --link some-postgres:db -p 8080:8080 adminer

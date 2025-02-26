@@ -1,6 +1,5 @@
 from fastapi import Request
 
-
 async def extract_request_data(request: Request) -> dict:
     request_data = {
         "method": request.method if request.method else None,
@@ -14,3 +13,4 @@ async def extract_request_data(request: Request) -> dict:
     }
 
     return request_data
+

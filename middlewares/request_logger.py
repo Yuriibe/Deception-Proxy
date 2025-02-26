@@ -1,9 +1,13 @@
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
-import time
-from utils.request_utils import extract_request_data
+from starlette.responses import RedirectResponse
+from utils.request_utils import *
+from utils.attack_detection import *
 import logging
 
+isMalicious = False
+
+# hiding uvicorn console output
 uvicorn_loggers = ["uvicorn", "uvicorn.error", "uvicorn.access", "watchfiles"]
 for logger_name in uvicorn_loggers:
     logging.getLogger(logger_name).propagate = False
@@ -15,18 +19,24 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
+
 class RequestLoggerMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        start_time = time.perf_counter()
-        print("🔍 Middleware is running for request:", request.url)  # Debugging print
         response = await call_next(request)
-        process_time = time.perf_counter() - start_time
-        response.headers["X-Process-Time"] = str(process_time)
 
         request_info = await extract_request_data(request)
 
         # Log the request details
-        print("Extracted Request Data:", request_info)  # Debugging print
-        logging.info(f"Incoming request: {request_info}")  # Ensure this logs only request_data
+        logging.info(f"Incoming request: {request_info}")
+
+        result = await sqli_detection(request_info['url'])
+        result = await xss_detection(request_info['url'])
+        result = await path_traversal_detection(request_info['url'])
+        isMalicious = await rce_detection(request_info['url'])
+
+        # if malicious behaviour is detected the request gets redirected
+        if isMalicious and request.url.path not in ["/welcome", "/static"]:
+            print(f"🔄 Redirecting {request.url.path} to /welcome")
+            return RedirectResponse(url="/welcome", status_code=302)
 
         return response

@@ -15,7 +15,6 @@ async def main():
 @app.get("/attacker/{attacker_id}")
 async def get_request(attacker_id: int, service: RequestService = Depends()):
     request_data = await service.get_request_by_id(attacker_id)
-
     if not request_data:
         raise HTTPException(status_code=404, detail="Request not found")
 

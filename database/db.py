@@ -12,9 +12,10 @@ DB_CONFIG = {
 class RequestRepository:
     async def get_request_by_id(self, request_id: int):
         conn = await asyncpg.connect(**DB_CONFIG)
-        result = await conn.fetchrow("SELECT * FROM request_header WHERE id = $1", request_id)
+        result = await conn.fetch("SELECT * FROM request_header WHERE attacker_id = $1", request_id)
         await conn.close()
-        return dict(result) if result else None
+        return [dict(row) for row in result] if result else []
+
 
     async def write_to_table(self, table_name: str, data: Dict[str, Any]) -> bool:
         if not data:

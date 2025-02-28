@@ -26,7 +26,6 @@ class RequestLoggerMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
 
         request_info = await extract_request_data(request)
-        print(type(request_info))
         # Log the request details
         logging.info(f"Incoming request: {request_info}")
 

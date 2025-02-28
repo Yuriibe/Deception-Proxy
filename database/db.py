@@ -24,13 +24,18 @@ class RequestRepository:
         placeholders = ', '.join(f'${i + 1}' for i in range(len(data)))  # Create $1, $2, ... placeholders
         values = list(data.values())  # Convert dict values to a list for parameterized query
 
-        try:
-            query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
-        except:
-            print("Sql error")
-            return False
+        print(f"📝 SQL INSERT: INSERT INTO {table_name} ({columns}) VALUES ({placeholders})")
+        print(f"🔍 Values: {values}")  # Debugging print
+        query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+
         async with asyncpg.create_pool(**DB_CONFIG) as pool:
             async with pool.acquire() as conn:
                 async with conn.transaction():
-                    await conn.execute(query, *values)
+                    try:
+                        await conn.execute(query, *values)
+                        print(f"✅ Data inserted into {table_name}: {data}")
+                    except Exception as e:
+                        print(f"❌ SQL Error: {e}")
+                        raise ValueError(f"SQL error: {e}")
+
         return True

@@ -1,10 +1,11 @@
 from dto.request_dto import RequestDTO
 from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.responses import RedirectResponse
+from starlette.responses import RedirectResponse, Response
 from utils.request_utils import *
 from utils.attack_detection import *
 import logging
 from services.request_service import RequestService
+from services.FakeDataService import FakeDataService
 
 isMalicious = False
 
@@ -19,16 +20,17 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
+fakeService = FakeDataService()
 
 
 class RequestLoggerMiddleware(BaseHTTPMiddleware):
+
     async def dispatch(self, request: Request, call_next):
         response = await call_next(request)
 
         request_info = await extract_request_data(request)
         # Log the request details
         logging.info(f"Incoming request: {request_info}")
-
         is_SQLi = await sqli_detection(request_info['url'])
         is_XSS = await xss_detection(request_info['url'])
         is_PathTraversal = await path_traversal_detection(request_info['url'])
@@ -46,20 +48,22 @@ class RequestLoggerMiddleware(BaseHTTPMiddleware):
             case (_, _, _, True):
                 attack_type = "Remote Code Execution"
 
-
-
-        if attack_type is not None:
+        if attack_type:
             # if malicious behaviour is detected the request gets redirected
             if request.url.path not in ["/welcome", "/static"]:
                 request_info['attack_type'] = attack_type
                 request_info['attacker_id'] = 1
-
 
                 request_dto = RequestDTO(**request_info)
 
                 print(f"🔄 Redirecting {request.url.path} to /welcome")
                 service = RequestService()
                 await service.write(request_dto)
+                if attack_type == "Path Traversal":
+                    requestedFile = fakeService.getMatchingPathTraversalPath(request_info['url'])
+                    fakePasswdContent = fakeService.getMatchingPathTraversalFile(requestedFile)
+
+                    return Response(content=fakePasswdContent, media_type="text/plain")
 
                 return RedirectResponse(url="/welcome", status_code=302)
 

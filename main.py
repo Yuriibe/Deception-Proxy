@@ -9,7 +9,7 @@ app.add_middleware(RequestLoggerMiddleware)
 
 @app.get('/')
 async def main():
-    return 'OK'
+    return 'OK2'
 
 
 @app.get("/attacker/{attacker_id}")

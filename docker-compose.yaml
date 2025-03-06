@@ -14,8 +14,8 @@ services:
       - "5432:5432"
     volumes:
       - ./schema:/docker-entrypoint-initdb.d
-
-
+    networks:
+      - web  # Define a shared network
 
   adminer:
     image: adminer
@@ -25,3 +25,8 @@ services:
       - "8080:8080"
     depends_on:
       - db
+    networks:
+      - web  # Ensure Adminer is on the same network
+
+networks:
+  web:  # Define the shared network

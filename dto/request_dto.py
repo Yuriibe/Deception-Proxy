@@ -9,7 +9,7 @@ class RequestDTO(BaseModel):
     sec_ch_ua: Optional[str] = None
     sec_ch_ua_platform: Optional[str] = None
     client_ip: str
-    cookies: Optional[Dict[str, str]] = None  # Optional, in case there are no cookies
+    cookies: Dict[str, str] = {}
     attack_type: str
     attacker_id: int
 

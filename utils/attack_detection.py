@@ -23,36 +23,42 @@ async def sqli_detection(url: str):
 async def xss_detection(url: str):
     return XSS_REGEX.search(url) is not None
 
-
 async def path_traversal_detection(url: str, base_directory="/var/www/html") -> bool:
-    # Extract path component from the URL
     parsed_url = urllib.parse.urlparse(url)
-    path = parsed_url.path  # Get only the path component (ignoring scheme, host, etc.)
 
-    # Decode the URL path twice
+    # Extract path & query parameters
+    path = parsed_url.path  # Get only the path component
+    query_params = urllib.parse.parse_qs(parsed_url.query)
+
+    # Decode URL path
     decoded_path = urllib.parse.unquote(path)
     double_decoded_path = urllib.parse.unquote(decoded_path)
 
     # Normalize the path
     sanitized_path = os.path.normpath(double_decoded_path).lstrip(os.sep)
     normalized_path = os.path.normpath(os.path.join(base_directory, sanitized_path))
-
     real_normalized_path = os.path.realpath(normalized_path)
 
-    print(f"Original URL: {url}")
+    print(f"🛠️ Debug Path Traversal Detection:")
     print(f"Extracted Path: {path}")
     print(f"Decoded Path: {double_decoded_path}")
     print(f"Sanitized Path: {sanitized_path}")
     print(f"Normalized Path: {normalized_path}")
     print(f"Real Normalized Path: {real_normalized_path}")
 
-    # Check for traversal patterns
-    is_traversal_attempt = PathTraversal_REGEX.search(double_decoded_path) is not None
+    # Detect traversal in query parameters
+    for param, values in query_params.items():
+        for value in values:
+            decoded_value = urllib.parse.unquote(value)
+            if ".." in decoded_value or "%" in decoded_value:  # URL encoding trick detection
+                print(f"🚨 Path Traversal Attempt Detected in Query Parameter '{param}': {decoded_value}")
+                return True  # Path traversal detected in query parameters
 
-    # Ensure path is within the allowed base directory
-    is_outside_base = not real_normalized_path.startswith(os.path.realpath(base_directory))
+    # Detect traversal (`../` or absolute paths)
+    is_traversal_attempt = ".." in double_decoded_path or not real_normalized_path.startswith(os.path.realpath(base_directory))
 
-    return is_traversal_attempt or is_outside_base
+    return is_traversal_attempt
+
 
 
 async def rce_detection(url: str):

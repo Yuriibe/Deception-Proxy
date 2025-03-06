@@ -53,7 +53,7 @@ class RequestLoggerMiddleware(BaseHTTPMiddleware):
             if request.url.path not in ["/welcome", "/static"]:
                 request_info['attack_type'] = attack_type
                 request_info['attacker_id'] = 1
-                request_info['cookies'] = ""
+                request_info['cookies'] = {}
 
                 request_dto = RequestDTO(**request_info)
 
@@ -63,6 +63,7 @@ class RequestLoggerMiddleware(BaseHTTPMiddleware):
                 if attack_type == "Path Traversal":
                     print("request_info['url'] : " + request_info['url'])
                     requestedFile = fakeService.getMatchingPathTraversalPath(request_info['url'])
+                    print("requestedFile: " + requestedFile)
                     fakePasswdContent = fakeService.getMatchingPathTraversalFile(requestedFile)
 
                     return Response(content=fakePasswdContent, media_type="text/plain")

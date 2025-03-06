@@ -2,13 +2,12 @@ import asyncpg
 from typing import Dict, Any
 
 DB_CONFIG = {
-    "user": "proxy_admin",
-    "password": "Zt8#5xPqT$kN!3dY",
+    "host": "localhost",  # Use container name if in Docker
+    "port": "5432",
     "database": "malicious_requests",
-    "host": "postgres_db",
+    "user": "proxy_admin",
+    "password": "Zt8#5xPqT$kN!3dY"
 }
-
-
 
 class RequestRepository:
     async def get_request_by_id(self, request_id: int):

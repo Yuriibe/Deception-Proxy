@@ -2,11 +2,12 @@ import asyncpg
 from typing import Dict, Any
 
 DB_CONFIG = {
-    "host": "localhost",
+    "user": "proxy_admin",
+    "password": "Zt8#5xPqT$kN!3dY",
     "database": "malicious_requests",
-    "user": "postgres",
-    "password": "root"
+    "host": "postgres_db",
 }
+
 
 
 class RequestRepository:

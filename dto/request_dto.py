@@ -1,22 +1,21 @@
 from pydantic import BaseModel, HttpUrl
-from typing import Optional
+from typing import Optional, Dict
+import json
 
 class RequestDTO(BaseModel):
     method: str
-    url: HttpUrl  # ✅ URL is validated by Pydantic
-
-    def dict(self, **kwargs):
-        """Override dict() to convert HttpUrl to string"""
-        data = super().dict(**kwargs)
-        data["url"] = str(data["url"])  # Convert HttpUrl to string before inserting
-        return data
-
-    method: str
-    url: HttpUrl
+    url: HttpUrl  # Pydantic will validate that this is a valid URL
     user_agent: Optional[str] = None
     sec_ch_ua: Optional[str] = None
     sec_ch_ua_platform: Optional[str] = None
     client_ip: str
-    cookies: Optional[str] = None
+    cookies: Optional[Dict[str, str]] = None  # Optional, in case there are no cookies
     attack_type: str
     attacker_id: int
+
+    def dict(self, **kwargs):
+        """Override dict() to ensure URL is a string and cookies are stored as JSON"""
+        data = super().dict(**kwargs)
+        data["url"] = str(data["url"])  # Convert HttpUrl to string
+        data["cookies"] = json.dumps(data["cookies"]) if self.cookies else None  # Convert cookies dict to JSON
+        return data

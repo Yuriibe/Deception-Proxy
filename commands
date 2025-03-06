@@ -5,3 +5,9 @@ docker run --name adminer -d --link some-postgres:db -p 8080:8080 adminer
  & .\.venv\Scripts\activate
 
  uvicorn main:app --host 127.0.0.1 --port 8081 --reload --log-level debug
+
+
+docker exec -it postgres_db psql -U proxy_admin -d malicious_requests
+
+ALTER USER proxy_admin WITH PASSWORD 'Zt8#5xPqT$kN!3dY';
+

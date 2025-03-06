@@ -42,9 +42,12 @@ class FakeDataService:
         return None
 
     def getMatchingPathTraversalFile(self, requestedFile: str):
-        with open('fakeResponses/pathTraversal' + requestedFile) as f:
-            return f.read()
+        if not requestedFile:
+            return "Invalid file request"
+        filePath = 'fakeResponses/pathTraversal/' + requestedFile
+        if os.path.isfile(filePath):
+            with open(filePath) as f:
+                return f.read()
 
     def getMatchingPathTraversalPath(self, url: str):
         return self.extract_requested_file(url)
-

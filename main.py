@@ -24,3 +24,7 @@ async def get_request(attacker_id: int, service: RequestService = Depends()):
 @app.get('/welcome')
 async def welcome(request: Request):
     return {'msg': 'Welcome!', 'headers': request.headers}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

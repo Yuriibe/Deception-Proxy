@@ -73,4 +73,4 @@ async def render_html(file: str = Query(None, description="File path to retrieve
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=7080)
+    uvicorn.run(app, host="0.0.0.0", port=80)

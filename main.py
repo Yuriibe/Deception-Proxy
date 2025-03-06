@@ -22,7 +22,8 @@ async def get_request(attacker_id: int, service: RequestService = Depends()):
     if not request_data:
         raise HTTPException(status_code=404, detail="Request not found")
 
-    return request_data
+    # return request_data
+    return ""
 
 
 @app.get('/welcome')

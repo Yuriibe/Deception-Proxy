@@ -7,7 +7,7 @@ services:
     restart: always
     shm_size: 128mb
     environment:
-      POSTGRES_USER: pg_admin
+      POSTGRES_USER: proxy_admin
       POSTGRES_PASSWORD: Zt8#5xPqT$kN!3dY
       POSTGRES_DB: malicious_requests
     ports:

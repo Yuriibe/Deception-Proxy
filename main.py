@@ -11,7 +11,7 @@ app.add_middleware(RequestLoggerMiddleware)
 templates = Jinja2Templates(directory="templates")
 
 
-@app.get('/')
+@app.get('/check')
 async def main():
     return 'OK2'
 
@@ -33,7 +33,7 @@ async def welcome(request: Request):
 
 FILES_DIRECTORY = "fakeResponses/pathTraversal/dummy/"
 
-@app.get("/files", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse)
 async def render_html(file: str = Query(None, description="File path to retrieve")):
     """
      1. If ?file= is provided, display the content of the requested file as text (instead of downloading).

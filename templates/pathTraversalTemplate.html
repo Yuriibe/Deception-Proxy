@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Browser</title>
+    <title>Internal Document Portal</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #eef1f5;
             text-align: center;
             padding: 20px;
         }
@@ -17,32 +17,68 @@
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             display: inline-block;
+            width: 60%;
+            text-align: left;
         }
-        a {
-            display: block;
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+        }
+        .file-list {
+            list-style: none;
+            padding: 0;
+        }
+        .file-list li {
             margin: 10px 0;
-            text-decoration: none;
-            color: blue;
+            font-size: 16px;
         }
-        a:hover {
+        .file-list a {
+            text-decoration: none;
+            color: #0073e6;
+        }
+        .file-list a:hover {
             text-decoration: underline;
+        }
+        .metadata {
+            font-size: 12px;
+            color: gray;
+        }
+        .search-bar {
+            margin-bottom: 15px;
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .session-info {
+            font-size: 14px;
+            color: green;
+            text-align: right;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2>File Explorer</h2>
-        <p>Click on a file to view its contents:</p>
+<div class="container">
+    <h2>Internal Document Portal</h2>
 
-        <!-- Normal Files -->
-        <a href="/?file=Internal_Audit_Q4_2024.txt">📄 Internal Audit Report Q4 2024</a>
-        <a href="/?file=Client_Database_Export_2024.sql">📝 Client Database Export 2024</a>
-        <a href="/?file=Confidential_Internal_Notes.txt">🖊️ Internal Notes</a>
+    <ul class="file-list">
 
+        <li><a href="/?file=Internal_Audit_Q4_2024.txt">Internal Audit Report Q4 2024</a> <span class="metadata">(Size: 1.2MB, Last Modified: Jan 15, 2025)</span>
+        </li>
+        <li><a href="/?file=Client_Database_Export_2024.sql"> Client Database Export 2024</a> <span class="metadata">(Size: 4.5MB, Last Modified: Feb 10, 2025)</span>
+        </li>
+        <li><a href="/?file=Confidential_Internal_Notes.txt">Internal Notes</a> <span class="metadata">(Size: 750KB, Last Modified: Mar 1, 2025)</span>
+        </li>
+        <li><a href="/?file=master_keys.csv">../../master_keys.csv</a> <span class="metadata">(Size: 3.8MB, Last Modified: Feb 20, 2025)</span>
+        </li>
 
-        <p><i>Unauthorized access is prohibited.</i></p>
-    </div>
+    </ul>
+
+</div>
 
 </body>
 </html>

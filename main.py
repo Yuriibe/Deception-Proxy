@@ -25,12 +25,6 @@ async def get_request(attacker_id: int, service: RequestService = Depends()):
     # return request_data
     return ""
 
-
-@app.get('/welcome')
-async def welcome(request: Request):
-    return {'msg': 'Welcome!', 'headers': request.headers}
-
-
 FILES_DIRECTORY = "fakeResponses/pathTraversal/dummy/"
 
 @app.get("/", response_class=HTMLResponse)
@@ -43,6 +37,7 @@ async def render_html(file: str = Query(None, description="File path to retrieve
     if file:
         # Construct the full file path
         sanitized_filename = file.lstrip("/")
+
         file_path = os.path.join(FILES_DIRECTORY, sanitized_filename)
 
         # Debugging: Print the requested file path

@@ -60,6 +60,4 @@ class FakeDataService:
         return "File not found"
 
     def getMatchingPathTraversalPath(self, url: str):
-        """Extract and return the detected path for logging purposes."""
-        print(f"🔍 URL being analyzed: {url}")
         return self.extract_requested_file(url)

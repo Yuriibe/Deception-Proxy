@@ -25,7 +25,7 @@ async def get_request(attacker_id: int, service: RequestService = Depends()):
     # return request_data
     return ""
 
-FILES_DIRECTORY = "fakeResponses/pathTraversal/dummy/"
+FILES_DIRECTORY = "fakeResponses/pathTraversal/dummy"
 
 @app.get("/", response_class=HTMLResponse)
 async def render_html(file: str = Query(None, description="File path to retrieve")):
@@ -42,10 +42,11 @@ async def render_html(file: str = Query(None, description="File path to retrieve
 
         # Debugging: Print the requested file path
         absolute_path = os.path.abspath(file_path)
-        print(f"📂 Requested File: {file_path}")
-        print(f"🔍 Absolute Path: {absolute_path}")
 
-        # ✅ Check if the file exists before serving
+        print(f"Requested file: {file}")
+        print(f"Resolved path: {file_path}")
+
+        # Check if the file exists before serving
         if os.path.isfile(file_path):
             print("✅ File found! Displaying content...")
             with open(file_path, "r", encoding="utf-8") as f:
@@ -57,7 +58,7 @@ async def render_html(file: str = Query(None, description="File path to retrieve
             print("❌ File not found!")
             raise HTTPException(status_code=404, detail="File not found")
 
-    # ✅ Render the bait HTML page if no file is requested
+    # Render the bait HTML page if no file is requested
     with open("templates/pathTraversalTemplate.html", "r", encoding="utf-8") as f:
         html_content = f.read()
 
@@ -68,4 +69,4 @@ async def render_html(file: str = Query(None, description="File path to retrieve
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=80)
+    uvicorn.run(app, host="0.0.0.0", port=809)

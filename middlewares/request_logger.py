@@ -57,14 +57,26 @@ class RequestLoggerMiddleware(BaseHTTPMiddleware):
 
                 request_dto = RequestDTO(**request_info)
 
-                print(f"🔄 Redirecting {request.url.path} to /welcome")
                 service = RequestService()
                 await service.write(request_dto)
                 if attack_type == "Path Traversal":
-                    print("request_info['url'] : " + request_info['url'])
+                    print(f"🔍 Attempted Path Traversal: {request_info['url']}")
+
                     requestedFile = fakeService.getMatchingPathTraversalPath(request_info['url'])
-                    print("requestedFile: " + requestedFile)
+
+                    requestedFile = os.path.normpath(requestedFile).replace("\\", "/")
+
+                    if not requestedFile:
+                        print("❌ No matching path found for traversal attempt.")
+                        return Response(content="File not found.", media_type="text/plain", status_code=404)
+
+                    print(f"📂 Requested Fake File: {requestedFile}")
+
                     fakePasswdContent = fakeService.getMatchingPathTraversalFile(requestedFile)
+
+                    if not fakePasswdContent:
+                        print("❌ Fake file content missing!")
+                        return Response(content="File not found.", media_type="text/plain", status_code=404)
 
                     return Response(content=fakePasswdContent, media_type="text/plain")
 
